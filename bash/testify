@@ -1,0 +1,65 @@
+#!/bin/bash
+
+add_badges_to_readme(){
+  local name="${get_name_from_package_json}"
+  echo "" >> README.md
+  echo "[![Build Status](https://travis-ci.org/octoblu/${name}.svg?branch=master)](https://travis-ci.org/octoblu/${name})" >> README.md
+  echo "[![Code Climate](https://codeclimate.com/github/octoblu/${name}/badges/gpa.svg)](https://codeclimate.com/github/octoblu/${name})" >> README.md
+  echo "[![Test Coverage](https://codeclimate.com/github/octoblu/${name}/badges/coverage.svg)](https://codeclimate.com/github/octoblu/${name})" >> README.md
+  echo "[![npm version](https://badge.fury.io/js/${name}.svg)](http://badge.fury.io/js/${name})" >> README.md
+  echo "[![Gitter](https://badges.gitter.im/octoblu/help.svg)](https://gitter.im/octoblu/help)" >> README.md
+}
+
+copy_templates(){
+  local templates_dir="$(get_templates_dir)"
+  mkdir -p test
+  cp "${templates_dir}/mocha.opts" test/
+  cp "${templates_dir}/test_helper.coffee" test/
+  cp "${templates_dir}/codeclimate.yml" .codeclimate.yml
+  cp "${templates_dir}/coffeelint.json" coffeelint.json
+}
+
+get_name_from_package_json(){
+  local package_json="$(cat package.json)"
+  local name="$(echo "$package_json" | jq -r '.name')"
+  echo "$name"
+}
+
+get_templates_dir(){
+  local hop="$BASH_SOURCE"
+  while [ -n "$(readlink "${hop}")" ]; do
+    hop="$(readlink "${hop}")"
+  done
+  local script_directory="$(dirname "$hop")"
+  echo "${script_directory}/../templates/testify"
+}
+
+install_npm_modules(){
+  npm install --save-dev coffee-script mocha sinon chai sinon-chai istanbul mocha-istanbul coffee-coverage
+}
+
+update_package_json(){
+  local package_json="$(cat package.json)"
+  local name="$(echo "$package_json" | jq -r '.name')"
+  local revised_package_json=$(echo "$package_json" | jq 'setpath(["scripts", "test"]; "istanbul cover _mocha -- -R spec --require coffee-coverage/register-istanbul")')
+
+  echo "$revised_package_json" > package.json
+}
+
+main(){
+  local templates_dir="$(get_templates_dir)"
+  install_npm_modules
+  copy_templates
+  travisify $@
+  update_package_json
+  echo "We modified your package.json 'npm test' command. Sorry?"
+
+  echo "And now we are about to ruin your README.md #sorrynotsorry"
+  grep 'Build Status' README.md &> /dev/null
+  if [ $? -eq 0 ]; then
+    echo "... uhh nvm."
+    exit 0
+  fi
+  add_badges_to_readme
+}
+main $@
