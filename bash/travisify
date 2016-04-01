@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 get_templates_dir(){
   local hop="$BASH_SOURCE"
   local original_dir="$CWD"
@@ -16,10 +17,10 @@ get_templates_dir(){
 }
 
 main(){
-  echo "Updating travis config..."
-  local templates_dir="$(get_templates_dir)"
+  TEMPLATES_DIR="$(get_templates_dir)"
 
-  cp ~/Projects/Octoblu/muxblu/test/travis.yml .travis.yml
+  echo "Updating travis config..."
+  cp "${TEMPLATES_DIR}/travis.yml" .travis.yml
   travis sync $@ --no-interactive
   travis enable $@ --no-interactive
   travis encrypt $@ --no-interactive --add deploy.api_key ***REMOVED***
