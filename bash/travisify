@@ -2,10 +2,16 @@
 
 get_templates_dir(){
   local hop="$BASH_SOURCE"
+  local original_dir="$CWD"
+
+  cd "$(dirname $hop)"
   while [ -n "$(readlink "${hop}")" ]; do
     hop="$(readlink "${hop}")"
+    cd "$(dirname "${hop}")"
   done
-  local script_directory="$(dirname "$hop")"
+
+  local script_directory="$(pwd)"
+  cd "${original_dir}"
   echo "${script_directory}/../templates/travisify"
 }
 
