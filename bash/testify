@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 add_badges_to_readme(){
   local name="${get_name_from_package_json}"
   echo "" >> README.md
@@ -11,12 +12,11 @@ add_badges_to_readme(){
 }
 
 copy_templates(){
-  local templates_dir="$(get_templates_dir)"
   mkdir -p test
-  cp "${templates_dir}/mocha.opts" test/
-  cp "${templates_dir}/test_helper.coffee" test/
-  cp "${templates_dir}/codeclimate.yml" .codeclimate.yml
-  cp "${templates_dir}/coffeelint.json" coffeelint.json
+  cp "${TEMPLATES_DIR}/mocha.opts" test/
+  cp "${TEMPLATES_DIR}/test_helper.coffee" test/
+  cp "${TEMPLATES_DIR}/codeclimate.yml" .codeclimate.yml
+  cp "${TEMPLATES_DIR}/coffeelint.json" coffeelint.json
 }
 
 get_name_from_package_json(){
@@ -53,7 +53,8 @@ update_package_json(){
 }
 
 main(){
-  local templates_dir="$(get_templates_dir)"
+  TEMPLATES_DIR="$(get_templates_dir)"
+
   install_npm_modules
   copy_templates
   travisify $@
