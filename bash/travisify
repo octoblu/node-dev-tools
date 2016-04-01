@@ -1,0 +1,21 @@
+#!/bin/bash
+
+get_templates_dir(){
+  local hop="$BASH_SOURCE"
+  while [ -n "$(readlink "${hop}")" ]; do
+    hop="$(readlink "${hop}")"
+  done
+  local script_directory="$(dirname "$hop")"
+  echo "${script_directory}/../templates/travisify"
+}
+
+main(){
+  echo "Updating travis config..."
+  local templates_dir="$(get_templates_dir)"
+
+  cp ~/Projects/Octoblu/muxblu/test/travis.yml .travis.yml
+  travis sync $@ --no-interactive
+  travis enable $@ --no-interactive
+  travis encrypt $@ --no-interactive --add deploy.api_key ***REMOVED***
+}
+main $@
