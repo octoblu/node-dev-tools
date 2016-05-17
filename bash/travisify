@@ -23,6 +23,6 @@ main(){
   cp "${TEMPLATES_DIR}/travis.yml" .travis.yml
   travis sync $@ --no-interactive
   travis enable $@ --no-interactive
-  travis encrypt $@ --no-interactive --add deploy.api_key ***REMOVED***
+  travis encrypt $@ --no-interactive --add deploy.api_key dae09a1b-d3f8-401c-ac7e-c6c921034553
 }
 main $@
