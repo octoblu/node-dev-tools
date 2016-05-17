@@ -16,6 +16,10 @@ get_templates_dir(){
   echo "${script_directory}/../templates/travisify"
 }
 
+get_npm_key() {
+  cat "$HOME/.npmrc" | grep authToken | sed -e 's/.*_authToken=//'
+}
+
 main(){
   TEMPLATES_DIR="$(get_templates_dir)"
 
@@ -23,6 +27,7 @@ main(){
   cp "${TEMPLATES_DIR}/travis.yml" .travis.yml
   travis sync $@ --no-interactive
   travis enable $@ --no-interactive
-  travis encrypt $@ --no-interactive --add deploy.api_key ***REMOVED***
+  local npm_key="$(get_npm_key)"
+  travis encrypt $@ --no-interactive --add deploy.api_key "$npm_key"
 }
 main $@
