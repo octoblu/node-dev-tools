@@ -41,13 +41,13 @@ get_templates_dir(){
 }
 
 install_npm_modules(){
-  npm install --save-dev coffee-script mocha sinon chai sinon-chai istanbul mocha-istanbul coffee-coverage
+  npm install --save-dev coffee-script mocha sinon chai sinon-chai istanbul mocha-istanbul coffee-coverage chai-subset
 }
 
 update_package_json(){
   local package_json="$(cat package.json)"
   local name="$(echo "$package_json" | jq -r '.name')"
-  local revised_package_json=$(echo "$package_json" | jq 'setpath(["scripts", "test"]; "istanbul cover _mocha -- -R spec --require coffee-coverage/register-istanbul")')
+  local revised_package_json=$(echo "$package_json" | jq 'setpath(["scripts", "test"]; "istanbul cover _mocha -- -R spec --require coffee-coverage/register-istanbul && mocha --reporter json > coverage/mocha.json")')
 
   echo "$revised_package_json" > package.json
 }
