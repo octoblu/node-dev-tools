@@ -5,10 +5,9 @@ add_badges_to_readme(){
   local name="${get_name_from_package_json}"
   echo "" >> README.md
   echo "[![Build Status](https://travis-ci.org/octoblu/${name}.svg?branch=master)](https://travis-ci.org/octoblu/${name})" >> README.md
-  echo "[![Code Climate](https://codeclimate.com/github/octoblu/${name}/badges/gpa.svg)](https://codeclimate.com/github/octoblu/${name})" >> README.md
-  echo "[![Test Coverage](https://codeclimate.com/github/octoblu/${name}/badges/coverage.svg)](https://codeclimate.com/github/octoblu/${name})" >> README.md
+  echo "[![Test Coverage](https://codecov.io/gh/octoblu/${name}/branch/master/graph/badge.svg)](https://codecov.io/gh/octoblu/${name})" >> README.md
   echo "[![npm version](https://badge.fury.io/js/${name}.svg)](http://badge.fury.io/js/${name})" >> README.md
-  echo "[![Gitter](https://badges.gitter.im/octoblu/help.svg)](https://gitter.im/octoblu/help)" >> README.md
+  echo "[![Slack Status](http://community-slack.octoblu.com/badge.svg)](http://community-slack.octoblu.com)" >> README.md
 }
 
 copy_templates(){
