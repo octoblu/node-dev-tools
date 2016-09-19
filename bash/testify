@@ -2,12 +2,16 @@
 
 
 add_badges_to_readme(){
-  local name="${get_name_from_package_json}"
-  echo "" >> README.md
-  echo "[![Build Status](https://travis-ci.org/octoblu/${name}.svg?branch=master)](https://travis-ci.org/octoblu/${name})" >> README.md
-  echo "[![Test Coverage](https://codecov.io/gh/octoblu/${name}/branch/master/graph/badge.svg)](https://codecov.io/gh/octoblu/${name})" >> README.md
-  echo "[![npm version](https://badge.fury.io/js/${name}.svg)](http://badge.fury.io/js/${name})" >> README.md
-  echo "[![Slack Status](http://community-slack.octoblu.com/badge.svg)](http://community-slack.octoblu.com)" >> README.md
+  local name="$(get_name_from_package_json)"
+  local readme="README.md"
+  echo "" >> "${readme}"
+  echo "[![Build Status](https://travis-ci.org/octoblu/${name}.svg?branch=master)](https://travis-ci.org/octoblu/${name})" >> "${readme}"
+  echo "[![Test Coverage](https://codecov.io/gh/octoblu/${name}/branch/master/graph/badge.svg)](https://codecov.io/gh/octoblu/${name})" >> "${readme}"
+  echo "[![Dependency status](http://img.shields.io/david/octoblu/${name}.svg?style=flat)](https://david-dm.org/octoblu/${name})" >> "${readme}"
+  echo "[![devDependency Status](http://img.shields.io/david/dev/octoblu/${name}.svg?style=flat)](https://david-dm.org/octoblu/${name}#info=devDependencies)" >> "${readme}"
+  echo "[![Slack Status](http://community-slack.octoblu.com/badge.svg)](http://community-slack.octoblu.com)" >> "${readme}"
+  echo "" >> "${readme}"
+  echo "[![NPM](https://nodei.co/npm/${name}.svg?style=flat)](https://npmjs.org/package/${name})" >> "${readme}"
 }
 
 copy_templates(){
@@ -19,8 +23,7 @@ copy_templates(){
 }
 
 get_name_from_package_json(){
-  local package_json="$(cat package.json)"
-  local name="$(echo "$package_json" | jq -r '.name')"
+  local name="$(cat package.json | jq -r '.name')"
   echo "$name"
 }
 
