@@ -43,21 +43,30 @@ get_templates_dir(){
 }
 
 install_npm_modules(){
-  npm install --save-dev coffee-script mocha sinon chai sinon-chai istanbul mocha-istanbul coffee-coverage chai-subset
+  npm install --save-dev coffee-script mocha sinon chai sinon-chai nyc mocha-multi mocha-osx-reporter chai-subset
 }
 
 update_package_json(){
-  local package_json="$(cat package.json)"
-  local name="$(echo "$package_json" | jq -r '.name')"
-  local revised_package_json=$(echo "$package_json" | jq 'setpath(["scripts", "test"]; "istanbul cover _mocha -- -R spec --require coffee-coverage/register-istanbul && mocha --reporter json > coverage/mocha.json")')
+  local name="$(cat package.json | jq -r '.name')"
+  cat package.json | \
+    jq 'setpath(["scripts", "test"]; "env NODE_ENV=test mocha") | setpath(["scripts", "coverage"]; "nyc npm test") | setpath(["nyc", "cache"]; true) | setpath(["nyc", "reporter"]; ["text-summary","lcov","json"]) | setpath(["nyc", "extension"]; [".coffee"]) | setpath(["scripts", "test:watch"]; "mocha -w -R mocha-multi --reporter-options spec=-,mocha-osx-reporter=-")' > package.json.temp && mv package.json.temp package.json
+}
 
-  echo "$revised_package_json" > package.json
+add_to_gitignore() {
+  local gitignore=".gitignore"
+  local gitignore_temp=".gitignore.temp"
+  if [ -f "${gitignore}" ]; then
+    cat "${gitignore}" |
+    grep -v ".nyc_output" >> "${gitignore_temp}"
+    echo ".nyc_output" >> "${gitignore_temp}"
+    mv "${gitignore_temp}" "${gitignore}"
 }
 
 main(){
   TEMPLATES_DIR="$(get_templates_dir)"
 
   install_npm_modules
+  add_to_gitignore
   copy_templates
   travisify $@
   update_package_json
