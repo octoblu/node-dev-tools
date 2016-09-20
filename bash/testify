@@ -61,6 +61,7 @@ add_to_gitignore() {
     grep -v ".nyc_output" >> "${gitignore_temp}"
     echo ".nyc_output" >> "${gitignore_temp}"
     mv "${gitignore_temp}" "${gitignore}"
+  fi
 }
 
 main(){
