@@ -43,7 +43,7 @@ get_templates_dir(){
 }
 
 install_npm_modules(){
-  npm install --save-dev coffee-script mocha sinon chai sinon-chai nyc mocha-multi mocha-osx-reporter chai-subset
+  npm install --save-dev coffee-script mocha sinon chai sinon-chai nyc mocha-multi mocha-osx-reporter chai-subset env-test
 }
 
 update_package_json(){
