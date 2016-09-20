@@ -49,7 +49,8 @@ install_npm_modules(){
 update_package_json(){
   local name="$(cat package.json | jq -r '.name')"
   cat package.json | \
-    jq 'setpath(["scripts", "test"]; "env NODE_ENV=test mocha") | setpath(["scripts", "coverage"]; "nyc npm test") | setpath(["nyc", "cache"]; true) | setpath(["nyc", "reporter"]; ["text-summary","lcov","json"]) | setpath(["nyc", "extension"]; [".coffee"]) | setpath(["scripts", "test:watch"]; "mocha -w -R mocha-multi --reporter-options spec=-,mocha-osx-reporter=-")' > package.json.temp && mv package.json.temp package.json
+    jq 'setpath(["scripts", "test"]; "mocha") | setpath(["scripts", "coverage"]; "nyc npm test") | setpath(["scripts", "mocha:json"]; "env NPM_ENV=test mocha --reporter json > coverage/mocha.json") | setpath(["nyc", "cache"]; true) | setpath(["nyc", "reporter"]; ["text-summary","lcov","json"]) | setpath(["nyc", "extension"]; [".coffee"]) | setpath(["scripts", "test:watch"]; "mocha -w -R mocha-multi --reporter-options spec=-,mocha-osx-reporter=-")' > package.json.temp && \
+    mv package.json.temp package.json
 }
 
 add_to_gitignore() {
